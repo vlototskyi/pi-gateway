@@ -40,7 +40,11 @@ export class MqttController {
 
   private async forward(envelope: { topic: string; data: IoTMessage }) {
     try {
-      await firstValueFrom(this.http.post(this.backendUrl, envelope));
+      await firstValueFrom(
+        this.http.post(this.backendUrl, envelope, {
+          headers: { 'x-api-key': this.config.getOrThrow('API_KEY') },
+        }),
+      );
       this.logger.log(
         `📤 Forwarded ${envelope.data.device_id} from ${envelope.topic}`,
       );
